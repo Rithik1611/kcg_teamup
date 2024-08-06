@@ -32,6 +32,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_bloc: ^8.1.6
+  url_launcher: ^6.3.0
 
 dev_dependencies:
 
