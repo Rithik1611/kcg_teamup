@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kcg_teamup/view/pages/login_screen.dart';
+import 'package:kcg_teamup/view/pages/profile_page.dart';
 import 'package:kcg_teamup/viewmodel/bloc/auth_bloc.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,6 +19,9 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         home: LoginPage(),
+        routes: {
+          '/profile': (context) => ProfilePage(),
+        },
       ),
     );
   }
