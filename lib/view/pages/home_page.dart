@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:kcg_teamup/view/pages/add_category_page.dart';
+import 'package:kcg_teamup/view/pages/home.dart';
 
 void main() {
   runApp(const MyApp());
@@ -36,20 +38,12 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Home Page'),
-        backgroundColor: const Color.fromARGB(255, 93, 93, 93),
-      ),
-      body: Center(
-        child: Text(
-          'Selected Index: $_selectedIndex',
-          style: TextStyle(fontSize: 24),
-        ),
-      ),
+      appBar: _buildAppBar(),
+      body: _buildBody(),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         currentIndex: _selectedIndex,
-        selectedItemColor: Colors.black ,
+        selectedItemColor: Colors.black,
         unselectedItemColor: Colors.grey,
         onTap: _onItemTapped,
         items: const [
@@ -62,8 +56,8 @@ class _HomePageState extends State<HomePage> {
             label: 'Search',
           ),
           BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.heart),
-            label: 'Favorites',
+            icon: Icon(CupertinoIcons.add),
+            label: 'Add',
           ),
           BottomNavigationBarItem(
             icon: Icon(CupertinoIcons.person),
@@ -72,5 +66,64 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
     );
+  }
+
+  PreferredSizeWidget _buildAppBar() {
+    String title = '';
+    switch (_selectedIndex) {
+      case 0:
+        title = 'Home Page';
+        break;
+      case 1:
+        title = 'Search Page';
+        break;
+      case 2:
+        title = 'Add Page';
+        break;
+      case 3:
+        title = 'Profile Page';
+        break;
+    }
+
+    return AppBar(
+      title: Text(title),
+      backgroundColor: const Color.fromARGB(255, 93, 93, 93),
+      leading: IconButton(
+        icon: const Icon(Icons.menu),
+        onPressed: () {
+          // Handle menu button press
+        },
+      ),
+    );
+  }
+
+  Widget _buildBody() {
+    switch (_selectedIndex) {
+      case 0:
+        return Home();
+      case 1:
+        return Center(
+          child: Text(
+            'Selected Index: $_selectedIndex',
+            style: TextStyle(fontSize: 24),
+          ),
+        );
+      case 2:
+        return AddCategoryPage();
+      case 3:
+        return Center(
+          child: Text(
+            'Selected Index: $_selectedIndex',
+            style: TextStyle(fontSize: 24),
+          ),
+        );
+      default:
+        return Center(
+          child: Text(
+            'Selected Index: $_selectedIndex',
+            style: TextStyle(fontSize: 24),
+          ),
+        );
+    }
   }
 }
