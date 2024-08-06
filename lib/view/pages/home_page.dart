@@ -113,7 +113,7 @@ class _HomePageState extends State<HomePage> {
   Widget _buildBody() {
     switch (_selectedIndex) {
       case 0:
-        return Home();
+        return Manage();
       case 1:
         return Center(
           child: Text(
