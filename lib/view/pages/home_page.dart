@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:kcg_teamup/view/pages/add_category_page.dart';
+import 'package:kcg_teamup/view/pages/add_main_screen.dart';
 import 'package:kcg_teamup/view/pages/home.dart';
 
 void main() {
@@ -33,7 +33,7 @@ class _HomePageState extends State<HomePage> {
     if (index == 2) {
       final result = await Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => AddCategoryPage()),
+        MaterialPageRoute(builder: (context) => AddMainScreen()),
       );
       if (result == true) {
         // Update state to refresh the home page
@@ -122,7 +122,7 @@ class _HomePageState extends State<HomePage> {
           ),
         );
       case 2:
-        return AddCategoryPage();
+        return AddMainScreen();
       case 3:
         return Center(
           child: Text(
