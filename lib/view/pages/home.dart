@@ -66,7 +66,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
               physics: const BouncingScrollPhysics(),
               itemCount: Category.popularCourseList.length,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
+                crossAxisCount: 3,
                 mainAxisSpacing: 32.0,
                 crossAxisSpacing: 8.0, // Reduced horizontal spacing
                 childAspectRatio: 0.8,
@@ -164,9 +164,10 @@ class CategoryView extends StatelessWidget {
                                   const EdgeInsets.symmetric(horizontal: 16.0),
                               child: GestureDetector(
                                 onTap: () async {
-                                  final url = category.courseLink;
-                                  if (await canLaunch(url)) {
-                                    await launch(url);
+                                  final Uri url =
+                                      Uri.parse(category.courseLink);
+                                  if (await canLaunchUrl(url)) {
+                                    await launchUrl(url);
                                   } else {
                                     throw 'Could not launch $url';
                                   }

@@ -29,10 +29,23 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
 
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+  void _onItemTapped(int index) async {
+    if (index == 2) {
+      final result = await Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => AddCategoryPage()),
+      );
+      if (result == true) {
+        // Update state to refresh the home page
+        setState(() {
+          _selectedIndex = 0;
+        });
+      }
+    } else {
+      setState(() {
+        _selectedIndex = index;
+      });
+    }
   }
 
   @override
