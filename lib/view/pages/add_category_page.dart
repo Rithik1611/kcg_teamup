@@ -33,7 +33,8 @@ class _AddCategoryPageState extends State<AddCategoryPage> {
       setState(() {
         Category.popularCourseList.add(newCategory);
       });
-      Navigator.pop(context);
+      Navigator.pop(
+          context, true); // Pass true to indicate a new category was added
     }
   }
 
