@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:kcg_teamup/view/pages/add_main_screen.dart';
+import 'package:kcg_teamup/view/pages/chat_page.dart';
 import 'package:kcg_teamup/view/pages/home.dart';
 
 void main() {
@@ -76,6 +77,10 @@ class _HomePageState extends State<HomePage> {
             icon: Icon(CupertinoIcons.person),
             label: 'Profile',
           ),
+          BottomNavigationBarItem(
+            icon: Icon(CupertinoIcons.envelope),
+            label: 'Message',
+          ),
         ],
       ),
     );
@@ -95,6 +100,9 @@ class _HomePageState extends State<HomePage> {
         break;
       case 3:
         title = 'Profile Page';
+        break;
+      case 4:
+        title = 'Message Page';
         break;
     }
 
@@ -130,6 +138,8 @@ class _HomePageState extends State<HomePage> {
             style: TextStyle(fontSize: 24),
           ),
         );
+      case 4:
+        return ChatPage();
       default:
         return Center(
           child: Text(
