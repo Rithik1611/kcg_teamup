@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:kcg_teamup/view/pages/add_main_screen.dart';
 import 'package:kcg_teamup/view/pages/chat_page.dart';
 import 'package:kcg_teamup/view/pages/home.dart';
+import 'package:kcg_teamup/view/pages/profile_page.dart';
+import 'package:kcg_teamup/view/pages/search_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -123,21 +125,11 @@ class _HomePageState extends State<HomePage> {
       case 0:
         return Manage();
       case 1:
-        return Center(
-          child: Text(
-            'Selected Index: $_selectedIndex',
-            style: TextStyle(fontSize: 24),
-          ),
-        );
+        return TeamApp();
       case 2:
         return AddMainScreen();
       case 3:
-        return Center(
-          child: Text(
-            'Selected Index: $_selectedIndex',
-            style: TextStyle(fontSize: 24),
-          ),
-        );
+        return ProfilePage();
       case 4:
         return ChatPage();
       default:
