@@ -9,7 +9,7 @@ class LoginPage extends StatelessWidget {
   LoginPage({super.key});
 
   // text editing controllers
-  final usernameController = TextEditingController();
+  final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
   // sign user in method
@@ -72,8 +72,8 @@ class LoginPage extends StatelessWidget {
 
                   // username textfield
                   MyTextField(
-                    controller: usernameController,
-                    hintText: 'Username',
+                    controller: emailController ,
+                    hintText: 'Email',
                     obscureText: false,
                   ),
 
@@ -95,7 +95,7 @@ class LoginPage extends StatelessWidget {
                     onTap: () {
                       BlocProvider.of<AuthBloc>(context).add(
                         AuthLoginRequest(
-                          username: usernameController.text.trim(),
+                          username: emailController.text.trim(),
                           password: passwordController.text.trim(),
                         ),
                       );

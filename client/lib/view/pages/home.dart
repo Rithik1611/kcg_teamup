@@ -176,7 +176,7 @@ class CategoryView extends StatelessWidget {
                                   'Course Link',
                                   style: TextStyle(
                                     fontSize: 12,
-                                    color: Colors.blue,
+                                    color: Color.fromARGB(255, 0, 0, 0),
                                     decoration: TextDecoration.underline,
                                   ),
                                 ),

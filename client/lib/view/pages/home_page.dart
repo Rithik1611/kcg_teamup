@@ -110,13 +110,23 @@ class _HomePageState extends State<HomePage> {
 
     return AppBar(
       title: Text(title),
-      backgroundColor: const Color.fromARGB(255, 93, 93, 93),
+      backgroundColor: Color.fromARGB(168, 130, 130, 130),
       leading: IconButton(
         icon: const Icon(Icons.menu),
         onPressed: () {
           // Handle menu button press
         },
       ),
+      //bell icon
+      actions: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: IconButton(
+            icon: const Icon(Icons.notifications_active),
+            onPressed: (){},
+          ),
+        )
+      ]
     );
   }
 
