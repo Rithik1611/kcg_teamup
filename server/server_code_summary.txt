@@ -1,0 +1,73 @@
+
+
+=== C:\kcg_teamup\server\controllers\user.ts ===
+
+
+
+=== C:\kcg_teamup\server\index.ts ===
+
+const { PrismaClient } = require('@prisma/client');
+
+const prisma = new PrismaClient();
+
+async function main() {
+  const data = await prisma.user.create({
+    data: {
+      name: 'Rich',
+      email: 'hello@prisma.com',
+      department: 'cse',
+      section: '5a',
+    },
+  });
+
+  console.log('Data',data)
+}
+
+
+
+=== C:\kcg_teamup\server\package.json ===
+
+{
+  "name": "server",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@types/node": "^22.1.0",
+    "prisma": "^5.18.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.5.4"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.18.0"
+  }
+}
+
+
+=== C:\kcg_teamup\server\prisma\schema.prisma ===
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+    id String @id @default(auto()) @map("_id") @db.ObjectId
+    name String
+    department String
+    email String
+    section String  
+}
+
+=== C:\kcg_teamup\server\routes\user.ts ===
+
