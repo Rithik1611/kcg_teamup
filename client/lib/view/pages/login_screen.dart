@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kcg_teamup/view/pages/home_page.dart';
 import 'package:kcg_teamup/view/widgets/my_button.dart';
-
 import 'package:kcg_teamup/view/widgets/my_textfield.dart';
 import 'package:kcg_teamup/viewmodel/bloc/auth_bloc.dart';
 
@@ -19,6 +18,11 @@ class LoginPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[300],
+      appBar: AppBar(
+        title: const Text("Login page"),
+        backgroundColor: Color.fromARGB(255, 0, 0, 0),
+        titleTextStyle: TextStyle(color: Colors.white),
+      ),
       body: BlocConsumer<AuthBloc, AuthState>(
         listener: (context, state) {
           if (state is AuthFailure) {
@@ -41,7 +45,8 @@ class LoginPage extends StatelessWidget {
           }
           return SafeArea(
             child: Center(
-              child: Column(crossAxisAlignment: CrossAxisAlignment.center,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const SizedBox(height: 30),
@@ -83,20 +88,6 @@ class LoginPage extends StatelessWidget {
 
                   const SizedBox(height: 10),
 
-                  // forgot password?
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Text(
-                          'Forgot Password?',
-                          style: TextStyle(color: Colors.grey[600]),
-                        ),
-                      ],
-                    ),
-                  ),
-
                   const SizedBox(height: 25),
 
                   // sign in button
@@ -110,7 +101,6 @@ class LoginPage extends StatelessWidget {
                       );
                     },
                   ),
-
                 ],
               ),
             ),
