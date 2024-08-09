@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:kcg_teamup/model/repositories/auth_remote_repository.dart';
 import 'package:kcg_teamup/view/pages/home_page.dart';
 import 'package:kcg_teamup/view/widgets/my_button.dart';
 import 'package:kcg_teamup/view/widgets/my_textfield.dart';
@@ -9,7 +10,7 @@ class LoginPage extends StatelessWidget {
   LoginPage({super.key});
 
   // text editing controllers
-  final usernameController = TextEditingController();
+  final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
   // sign user in method
@@ -72,8 +73,8 @@ class LoginPage extends StatelessWidget {
 
                   // username textfield
                   MyTextField(
-                    controller: usernameController,
-                    hintText: 'Username',
+                    controller: emailController,
+                    hintText: 'email',
                     obscureText: false,
                   ),
 
@@ -92,13 +93,25 @@ class LoginPage extends StatelessWidget {
 
                   // sign in button
                   MyButton(
-                    onTap: () {
-                      BlocProvider.of<AuthBloc>(context).add(
-                        AuthLoginRequest(
-                          username: usernameController.text.trim(),
-                          password: passwordController.text.trim(),
-                        ),
+                    onTap: () async {
+                      bool isSuccess = await AuthRemoteRepository().login(
+                        email: emailController.text,
+                        password: passwordController.text,
                       );
+
+                      if (isSuccess) {
+                        BlocProvider.of<AuthBloc>(context).add(
+                          AuthLoginRequest(
+                            password: passwordController.text.trim(),
+                            email: emailController.text.trim(),
+                          ),
+                        );
+                      } else {
+                        // Show error message
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Login failed')),
+                        );
+                      }
                     },
                   ),
                 ],
