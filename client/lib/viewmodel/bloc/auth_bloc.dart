@@ -9,7 +9,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthLoginRequest>((event, emit) async {
       try {
         emit(AuthLoading());
-        final username = event.username;
+        final email = event.email;
         final password = event.password;
 
         if (password.length < 6) {

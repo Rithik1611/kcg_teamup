@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:kcg_teamup/model/repositories/auth_remote_repository.dart';
 import 'package:kcg_teamup/view/pages/home_page.dart';
 import 'package:kcg_teamup/view/widgets/my_button.dart';
 import 'package:kcg_teamup/view/widgets/my_textfield.dart';
@@ -72,8 +73,10 @@ class LoginPage extends StatelessWidget {
 
                   // username textfield
                   MyTextField(
-                    controller: emailController ,
-                    hintText: 'Email',
+
+                    controller: emailController,
+                    hintText: 'email',
+
                     obscureText: false,
                   ),
 
@@ -91,14 +94,28 @@ class LoginPage extends StatelessWidget {
                   const SizedBox(height: 25),
 
                   // sign in button
-                  MyButton(
-                    onTap: () {
-                      BlocProvider.of<AuthBloc>(context).add(
-                        AuthLoginRequest(
-                          username: emailController.text.trim(),
-                          password: passwordController.text.trim(),
-                        ),
+                  MyButton (
+                    onTap: () async {
+                      bool isSuccess = await AuthRemoteRepository().login(
+                        email: emailController.text,
+                        password: passwordController.text,
+
+
                       );
+
+                      if (isSuccess) {
+                        BlocProvider.of<AuthBloc>(context).add(
+                          AuthLoginRequest(
+                            password: passwordController.text.trim(),
+                            email: emailController.text.trim(),
+                          ),
+                        );
+                      } else {
+                        // Show error message
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Login failed')),
+                        );
+                      }
                     },
                   ),
                 ],
