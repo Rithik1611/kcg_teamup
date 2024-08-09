@@ -94,7 +94,7 @@ class _HomePageState extends State<HomePage> {
 
     return AppBar(
       title: Text(title),
-      backgroundColor: Color.fromARGB(168, 130, 130, 130),
+      backgroundColor: Colors.blue,
       leading: IconButton(
         icon: const Icon(Icons.menu),
         onPressed: () {
