@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:kcg_teamup/view/pages/home_page.dart';
 import 'package:kcg_teamup/view/pages/login_screen.dart';
 import 'package:kcg_teamup/view/pages/sign_up.dart';
 import 'package:kcg_teamup/viewmodel/bloc/auth_bloc.dart';
@@ -17,7 +18,7 @@ class MyApp extends StatelessWidget {
       create: (context) => AuthBloc(),
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: OpeningScreen(),
+        home: HomePage() ,
       ),
     );
   }
