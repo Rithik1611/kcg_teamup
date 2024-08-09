@@ -9,10 +9,10 @@ class TeamApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primaryColor: Colors.blueAccent,
-        hintColor: Colors.amber,
+        primaryColor: const Color.fromARGB(255, 175, 175, 175),
+        hintColor: const Color.fromARGB(255, 120, 120, 120),
         textTheme: const TextTheme(
-          titleLarge: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold, color: Colors.blueAccent),
+          titleLarge: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold, color: Color.fromARGB(255, 62, 62, 62)),
           titleMedium: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w600, color: Colors.black54),
           bodyMedium: TextStyle(fontSize: 14.0, color: Colors.black87),
         ),
@@ -98,7 +98,7 @@ class _TeamPageState extends State<TeamPage> {
         title: Text('Team Creation Accomplishment', style: Theme.of(context).textTheme.titleLarge),
         backgroundColor: Colors.white,
         elevation: 0,
-        iconTheme: IconThemeData(color: Colors.blueAccent),
+        iconTheme: IconThemeData(color: const Color.fromARGB(255, 0, 0, 0)),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -113,7 +113,7 @@ class _TeamPageState extends State<TeamPage> {
               child: TextField(
                 onChanged: filterStudents,
                 decoration: InputDecoration(
-                  prefixIcon: Icon(Icons.search, color: Colors.blueAccent),
+                  prefixIcon: Icon(Icons.search, color: const Color.fromARGB(255, 0, 0, 0)),
                   hintText: 'Search for team members by skill',
                   border: InputBorder.none,
                 ),
@@ -135,7 +135,7 @@ class _TeamPageState extends State<TeamPage> {
                   .map<DropdownMenuItem<String>>((String value) {
                 return DropdownMenuItem<String>(
                   value: value,
-                  child: Text(value, style: TextStyle(color: Colors.blueAccent)),
+                  child: Text(value, style: TextStyle(color: const Color.fromARGB(255, 0, 0, 0))),
                 );
               }).toList(),
             ),
@@ -152,7 +152,7 @@ class _TeamPageState extends State<TeamPage> {
                     ),
                     child: ListTile(
                       leading: CircleAvatar(
-                        backgroundColor: Colors.blueAccent,
+                        backgroundColor: Color.fromARGB(255, 186, 186, 186),
                         child: Text(
                           filteredStudents[index].name[0],
                           style: TextStyle(color: Colors.white),

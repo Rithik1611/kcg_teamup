@@ -73,8 +73,10 @@ class LoginPage extends StatelessWidget {
 
                   // username textfield
                   MyTextField(
+
                     controller: emailController,
                     hintText: 'email',
+
                     obscureText: false,
                   ),
 
@@ -92,11 +94,13 @@ class LoginPage extends StatelessWidget {
                   const SizedBox(height: 25),
 
                   // sign in button
-                  MyButton(
+                  MyButton (
                     onTap: () async {
                       bool isSuccess = await AuthRemoteRepository().login(
                         email: emailController.text,
                         password: passwordController.text,
+
+
                       );
 
                       if (isSuccess) {
