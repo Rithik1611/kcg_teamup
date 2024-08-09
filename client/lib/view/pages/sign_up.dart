@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:kcg_teamup/model/repositories/auth_remote_repository.dart';
 import 'package:kcg_teamup/view/pages/home_page.dart';
 import 'package:kcg_teamup/view/widgets/my_button.dart';
 import 'package:kcg_teamup/view/widgets/my_textfield.dart';
@@ -101,14 +102,29 @@ class SignUp extends StatelessWidget {
 
                   // sign in button
                   MyButton(
-                    onTap: () {
-                      BlocProvider.of<AuthBloc>(context).add(
-                        AuthSignUpRequest(
-                          username: usernameController.text.trim(),
-                          password: passwordController.text.trim(),
-                          email: emailController.text.trim(),
-                        ),
+                    onTap: () async {
+                      bool isSuccess = await AuthRemoteRepository().signup(
+                        name: usernameController.text,
+                        email: emailController.text,
+                        password: passwordController.text,
                       );
+
+                      if (isSuccess) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  HomePage()), // Replace with your next page
+                        );
+                      } else {
+                        // Show error message
+
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                              content: Text(
+                                  'Signup failed or email already exists!')),
+                        );
+                      }
                     },
                   ),
                 ],

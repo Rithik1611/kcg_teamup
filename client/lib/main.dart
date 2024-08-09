@@ -18,7 +18,8 @@ class MyApp extends StatelessWidget {
       create: (context) => AuthBloc(),
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: HomePage() ,
+        home: HomePage(),
+
       ),
     );
   }

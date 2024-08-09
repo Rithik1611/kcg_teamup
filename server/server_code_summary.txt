@@ -1,0 +1,123 @@
+
+
+=== C:\kcg_teamup\server\controllers\user.ts ===
+
+import { Request, Response } from 'express';
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
+
+export const register = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const { email, name, password } = req.body;
+
+        // Check if email already exists
+        const emailAlreadyExists = await prisma.user.findUnique({
+            where: {
+                email: email,
+            },
+        });
+
+        if (emailAlreadyExists) {
+            res.status(400).json({ message: 'Email already exists' });
+            return;
+        }
+
+        // Create a new user
+        const user = await prisma.user.create({
+            data: {
+                email,
+                name,
+                password, // Ensure you hash the password before saving in a real application
+                department: 'default department',
+                section: 'default section',
+            },
+        });
+
+        res.status(201).json(user);
+    } catch (error) {
+        res.status(500).json({ message: 'Internal server error', error: (error as Error).message });
+    }
+};
+
+
+=== C:\kcg_teamup\server\index.ts ===
+
+import express from 'express';
+import AuthRoute from './routes/auth';
+
+
+const app = express();
+const port = 5000;
+
+app.use(express.json());
+
+app.use('/api', AuthRoute);
+
+app.listen(port, () => {
+    console.log(`Server running on port ${port}`);
+});
+
+
+
+
+
+=== C:\kcg_teamup\server\package.json ===
+
+{
+  "name": "server",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon src/index.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "^22.1.0",
+    "nodemon": "^3.1.4",
+    "prisma": "^5.18.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.5.4"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.18.0",
+    "express": "^4.19.2"
+  }
+}
+
+
+=== C:\kcg_teamup\server\prisma\schema.prisma ===
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+    id String @id @default(auto()) @map("_id") @db.ObjectId
+    name String
+    department String
+    email String @unique
+    section String  
+    password String
+}
+
+=== C:\kcg_teamup\server\routes\auth.ts ===
+
+import { register } from "../controllers/user";
+import { Router } from 'express';
+
+const router = Router();
+
+router.post('/register', register);
+
+export default router;
