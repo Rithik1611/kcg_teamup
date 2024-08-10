@@ -24,7 +24,7 @@ class _HomePageState extends State<HomePage> {
   void _onSearchTapped() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => TeamApp()),
+      MaterialPageRoute(builder: (context) => TeamCreationScreen()),
     );
   }
 

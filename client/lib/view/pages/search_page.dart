@@ -1,179 +1,216 @@
+import 'dart:async'; // Import to use Timer
+
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:convert';
-import 'student_model.dart';
 
-class TeamApp extends StatelessWidget {
+class TeamCreationScreen extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primaryColor: const Color.fromARGB(255, 175, 175, 175),
-        hintColor: const Color.fromARGB(255, 120, 120, 120),
-        textTheme: const TextTheme(
-          titleLarge: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold, color: Color.fromARGB(255, 62, 62, 62)),
-          titleMedium: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w600, color: Colors.black54),
-          bodyMedium: TextStyle(fontSize: 14.0, color: Colors.black87),
-        ),
-      ),
-      home: TeamPage(),
-    );
-  }
+  _TeamCreationScreenState createState() => _TeamCreationScreenState();
 }
 
-class TeamPage extends StatefulWidget {
-  @override
-  _TeamPageState createState() => _TeamPageState();
-}
+class _TeamCreationScreenState extends State<TeamCreationScreen> {
+  final List<Map<String, String>> teamMembers = [
+    {
+      'name': 'Alice',
+      'role': 'Frontend Developer',
+      'avatarUrl': 'https://i.pravatar.cc/150?img=1',
+      'skills': 'React, JavaScript',
+      'year': 'Junior'
+    },
+    {
+      'name': 'Jerome',
+      'role': 'Backend Developer',
+      'avatarUrl': 'https://i.pravatar.cc/150?img=2',
+      'skills': 'Node.js, Express',
+      'year': 'Sophomore'
+    },
+    {
+      'name': 'Don',
+      'role': 'Fullstack Developer',
+      'avatarUrl': 'https://i.pravatar.cc/150?img=3',
+      'skills': 'Flutter, Dart',
+      'year': 'Senior'
+    },
+    {
+      'name': 'Raghu',
+      'role': 'Data Scientist',
+      'avatarUrl': 'https://i.pravatar.cc/150?img=4',
+      'skills': 'Python, Machine Learning',
+      'year': 'Freshman'
+    },
+    {
+      'name': 'Jamal',
+      'role': 'DevOps Engineer',
+      'avatarUrl': 'https://i.pravatar.cc/150?img=5',
+      'skills': 'Docker, Kubernetes',
+      'year': 'Senior'
+    },
+  ];
 
-class _TeamPageState extends State<TeamPage> {
-  List<Student> allStudents = [];
-  List<Student> filteredStudents = [];
-  String selectedSort = 'Name';
+  String searchQuery = '';
+  String yearQuery = ''; // Additional search criterion
+  final Set<int> selectedTeamMembers = {};
+  Timer? debounce;
 
   @override
-  void initState() {
-    super.initState();
-    loadStudents();
+  void dispose() {
+    debounce
+        ?.cancel(); // Ensure the timer is canceled when the widget is disposed
+    super.dispose();
   }
 
-  Future<void> loadStudents() async {
-    final prefs = await SharedPreferences.getInstance();
-    final studentsData = prefs.getString('studentsData');
-    if (studentsData != null) {
-      final List<dynamic> decodedData = json.decode(studentsData);
+  void onSearchChanged(String value) {
+    if (debounce?.isActive ?? false) debounce?.cancel();
+    debounce = Timer(Duration(milliseconds: 300), () {
       setState(() {
-        allStudents = decodedData.map((json) => Student.fromJson(json)).toList();
-        filteredStudents = allStudents;
+        searchQuery = value;
       });
-    } else {
-      allStudents = [
-        Student(name: 'Alice', year: 'Sophomore', skills: ['JavaScript', 'Flutter']),
-        Student(name: 'Jerome', year: 'Senior', skills: ['Python', 'Django']),
-        Student(name: 'Don', year: 'Junior', skills: ['Java', 'Spring']),
-        Student(name: 'Raghu', year: 'Senior', skills: ['Kotlin', 'Android']),
-        Student(name: 'Jamal', year: 'Freshman', skills: ['HTML', 'CSS', 'JavaScript']),
-      ];
-      filteredStudents = allStudents;
-      saveStudents();
-    }
-  }
-
-  Future<void> saveStudents() async {
-    final prefs = await SharedPreferences.getInstance();
-    final encodedData = json.encode(allStudents.map((student) => student.toJson()).toList());
-    prefs.setString('studentsData', encodedData);
-  }
-
-  void filterStudents(String query) {
-    final filtered = allStudents.where((student) {
-      return student.skills.any((skill) => skill.toLowerCase().contains(query.toLowerCase()));
-    }).toList();
-
-    setState(() {
-      filteredStudents = filtered;
-      sortStudents(selectedSort); // Apply sorting after filtering
     });
   }
 
-  void sortStudents(String criteria) {
-    switch (criteria) {
-      case 'Name':
-        filteredStudents.sort((a, b) => a.name.compareTo(b.name));
-        break;
-      case 'Year':
-        filteredStudents.sort((a, b) => a.year.compareTo(b.year));
-        break;
-      case 'Number of Skills':
-        filteredStudents.sort((a, b) => b.skills.length.compareTo(a.skills.length));
-        break;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
+    List<Map<String, String>> filteredMembers = teamMembers
+        .where((member) =>
+            member['skills']!
+                .toLowerCase()
+                .contains(searchQuery.toLowerCase()) &&
+            member['year']!.toLowerCase().contains(yearQuery.toLowerCase()))
+        .toList();
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('Team Creation Accomplishment', style: Theme.of(context).textTheme.titleLarge),
-        backgroundColor: Colors.white,
-        elevation: 0,
-        iconTheme: IconThemeData(color: const Color.fromARGB(255, 0, 0, 0)),
+        backgroundColor: Colors.blue,
+        title: Text('Team creation accomplishment'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            // Search Bar
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.grey[200],
-                borderRadius: BorderRadius.circular(30.0),
-              ),
-              child: TextField(
-                onChanged: filterStudents,
-                decoration: InputDecoration(
-                  prefixIcon: Icon(Icons.search, color: const Color.fromARGB(255, 0, 0, 0)),
-                  hintText: 'Search for team members by skill',
-                  border: InputBorder.none,
+      body: Column(
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(
+              onChanged: onSearchChanged,
+              decoration: InputDecoration(
+                hintText: 'Search for team members by skill',
+                prefixIcon: Icon(Icons.search),
+                suffixIcon: searchQuery.isNotEmpty
+                    ? IconButton(
+                        icon: Icon(Icons.close),
+                        onPressed: () {
+                          setState(() {
+                            searchQuery = '';
+                          });
+                        },
+                      )
+                    : null,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20.0),
                 ),
               ),
             ),
-            SizedBox(height: 10),
-            // Sorting Dropdown
-            DropdownButton<String>(
-              value: selectedSort,
-              onChanged: (String? newValue) {
-                if (newValue != null) {
-                  setState(() {
-                    selectedSort = newValue;
-                    sortStudents(selectedSort);
-                  });
-                }
+          ),
+          // Additional search field for year
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(
+              onChanged: (value) {
+                setState(() {
+                  yearQuery = value;
+                });
               },
-              items: <String>['Name', 'Year', 'Number of Skills']
-                  .map<DropdownMenuItem<String>>((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value, style: TextStyle(color: const Color.fromARGB(255, 0, 0, 0))),
-                );
-              }).toList(),
+              decoration: InputDecoration(
+                hintText: 'Search for team members by year',
+                prefixIcon: Icon(Icons.calendar_today),
+                suffixIcon: yearQuery.isNotEmpty
+                    ? IconButton(
+                        icon: Icon(Icons.close),
+                        onPressed: () {
+                          setState(() {
+                            yearQuery = '';
+                          });
+                        },
+                      )
+                    : null,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20.0),
+                ),
+              ),
             ),
-            SizedBox(height: 20),
-            // List of Team Members
+          ),
+          // Display selected team members
+          if (selectedTeamMembers.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    'Selected Team Members:',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  Wrap(
+                    spacing: 8,
+                    children: selectedTeamMembers.map((index) {
+                      final member = teamMembers[index];
+                      return Chip(
+                        avatar: CircleAvatar(
+                          backgroundImage: NetworkImage(member['avatarUrl']!),
+                        ),
+                        label: Text(member['name']!),
+                        deleteIcon: Icon(Icons.close),
+                        onDeleted: () {
+                          setState(() {
+                            selectedTeamMembers.remove(index);
+                          });
+                        },
+                      );
+                    }).toList(),
+                  ),
+                ],
+              ),
+            ),
+          // Show filtered team members
+          if (searchQuery.isNotEmpty || yearQuery.isNotEmpty)
             Expanded(
               child: ListView.builder(
-                itemCount: filteredStudents.length,
+                itemCount: filteredMembers.length,
                 itemBuilder: (context, index) {
-                  return Card(
-                    elevation: 3,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
+                  final member = filteredMembers[index];
+                  final originalIndex = teamMembers.indexOf(member);
+                  final isSelected =
+                      selectedTeamMembers.contains(originalIndex);
+                  return ListTile(
+                    leading: CircleAvatar(
+                      backgroundImage: NetworkImage(member['avatarUrl']!),
                     ),
-                    child: ListTile(
-                      leading: CircleAvatar(
-                        backgroundColor: Color.fromARGB(255, 186, 186, 186),
-                        child: Text(
-                          filteredStudents[index].name[0],
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        radius: 25,
+                    title: Text(member['name']!),
+                    subtitle: Text(
+                        '${member['role']} - ${member['skills']} (${member['year']})'),
+                    trailing: IconButton(
+                      icon: Icon(
+                        isSelected ? Icons.check : Icons.add,
+                        color: isSelected ? Colors.green : Colors.blue,
                       ),
-                      title: Text(
-                        filteredStudents[index].name,
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                      subtitle: Text(
-                        '${filteredStudents[index].year}, Skills: ${filteredStudents[index].skills.join(', ')}',
-                        style: Theme.of(context).textTheme.bodyMedium,
-                      ),
+                      onPressed: () {
+                        setState(() {
+                          if (isSelected) {
+                            selectedTeamMembers.remove(originalIndex);
+                          } else {
+                            selectedTeamMembers.add(originalIndex);
+                          }
+                        });
+                      },
                     ),
+                    onTap: () {
+                      // Implement onTap action if needed
+                    },
                   );
                 },
               ),
             ),
-          ],
-        ),
+        ],
       ),
     );
   }
