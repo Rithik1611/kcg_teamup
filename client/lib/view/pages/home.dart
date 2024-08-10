@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:kcg_teamup/view/pages/event_details_page.dart';
 import 'package:kcg_teamup/view/pages/home_page.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -530,56 +531,6 @@ class CategoryView extends StatelessWidget {
                 ),
               ),
             ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class EventDetailsPage extends StatelessWidget {
-  final Category category;
-
-  const EventDetailsPage({Key? key, required this.category}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(category.title),
-        backgroundColor: Colors.blue,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Title: ${category.title}',
-              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 10),
-            Text(
-              'Course Link: ${category.courseLink}',
-              style: const TextStyle(fontSize: 16),
-            ),
-            const SizedBox(height: 10),
-            if (category.date != null)
-              Text(
-                'Date: ${category.date!.toLocal()}',
-                style: const TextStyle(fontSize: 16),
-              ),
-            const SizedBox(height: 10),
-            Text(
-              'Description: ${category.about}',
-              style: const TextStyle(fontSize: 16),
-            ),
-            const SizedBox(height: 10),
-            if (category.title.isNotEmpty)
-              Text(
-                'Event Type: ${category.eventType}', // Assuming the 'title' field is being used for 'Event Type'
-                style: const TextStyle(fontSize: 16),
-              ),
           ],
         ),
       ),
