@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:kcg_teamup/view/pages/home_page.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -176,6 +177,7 @@ class CalenderTheme extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
         primaryColor: Colors.blue,
@@ -221,7 +223,6 @@ class _CalendarPageState extends State<CalendarPage> {
   DateTime _selectedDay = DateTime.now();
   Map<DateTime, List<Event>> _events = {};
 
-  // Method to show a dialog for adding event description
   void _addEventDialog(DateTime selectedDay) {
     final TextEditingController _eventController = TextEditingController();
 
@@ -268,11 +269,13 @@ class _CalendarPageState extends State<CalendarPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Calendar',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        actions: [],
+        title: Text("Calender"),
+        leading: IconButton(
+            onPressed: () {
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => HomePage()));
+            },
+            icon: Icon(Icons.chevron_left_sharp)),
       ),
       body: Column(
         children: [
@@ -307,6 +310,13 @@ class _CalendarPageState extends State<CalendarPage> {
                 shape: BoxShape.circle,
               ),
             ),
+            headerStyle: HeaderStyle(
+              formatButtonVisible: false, // Hides the "2 weeks" button
+              titleTextStyle: TextStyle(
+                fontSize: 20.0,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ),
           const SizedBox(height: 16.0),
           ElevatedButton(
@@ -325,6 +335,12 @@ class _CalendarPageState extends State<CalendarPage> {
                             title: Text(_events[_selectedDay]![index].title),
                             subtitle:
                                 Text(_events[_selectedDay]![index].description),
+                            trailing: IconButton(
+                              icon: const Icon(Icons.delete, color: Colors.red),
+                              onPressed: () {
+                                _deleteEvent(_selectedDay, index);
+                              },
+                            ),
                           );
                         },
                       ),
@@ -332,6 +348,15 @@ class _CalendarPageState extends State<CalendarPage> {
         ],
       ),
     );
+  }
+
+  void _deleteEvent(DateTime selectedDay, int index) {
+    setState(() {
+      _events[selectedDay]!.removeAt(index);
+      if (_events[selectedDay]!.isEmpty) {
+        _events.remove(selectedDay);
+      }
+    });
   }
 }
 
@@ -458,7 +483,11 @@ class CategoryView extends StatelessWidget {
                             if (await canLaunchUrl(url)) {
                               await launchUrl(url);
                             } else {
-                              throw 'Could not launch $url';
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('Could not launch $url'),
+                                ),
+                              );
                             }
                           },
                           child: const Text(
