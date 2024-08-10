@@ -371,22 +371,19 @@ class Event {
 }
 
 class Category {
-  String title;
-  String courseLink;
+  final String title;
+  final String courseLink;
+  final DateTime? date;
+  final String? about; // Optional 'about' field
 
   Category({
     required this.title,
     required this.courseLink,
+    this.date,
+    this.about,
   });
 
-  static List<Category> popularCourseList = [
-    Category(
-      title: 'Young Technocrafts',
-      courseLink: 'https://example.com/course1',
-    ),
-
-    // Add more categories as needed
-  ];
+  static List<Category> popularCourseList = [];
 }
 
 class Home extends StatelessWidget {
@@ -399,6 +396,14 @@ class Home extends StatelessWidget {
     return true;
   }
 
+  List<Category> getFilteredCategories() {
+    final today = DateTime.now().toLocal();
+    return Category.popularCourseList.where((category) {
+      if (category.date == null) return true; // Keep categories with no date
+      return category.date!.isAfter(today.subtract(const Duration(days: 1)));
+    }).toList();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -409,13 +414,14 @@ class Home extends StatelessWidget {
           if (!snapshot.hasData) {
             return const Center(child: CircularProgressIndicator());
           } else {
+            final filteredCategories = getFilteredCategories();
             return GridView.builder(
               padding: const EdgeInsets.all(8),
               physics:
                   const NeverScrollableScrollPhysics(), // Prevents GridView from scrolling
               shrinkWrap:
                   true, // Allows GridView to size itself based on content
-              itemCount: Category.popularCourseList.length,
+              itemCount: filteredCategories.length,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 3,
                 mainAxisSpacing: 16.0,
@@ -423,7 +429,7 @@ class Home extends StatelessWidget {
                 childAspectRatio: 0.8,
               ),
               itemBuilder: (context, index) {
-                final category = Category.popularCourseList[index];
+                final category = filteredCategories[index];
                 return CategoryView(
                   callback: callBack,
                   category: category,
