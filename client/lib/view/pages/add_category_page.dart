@@ -26,8 +26,6 @@ class _AddCategoryPageState extends State<AddCategoryPage> {
     if (_formKey.currentState!.validate()) {
       final newCategory = Category(
         title: _titleController.text,
-        date: DateTime.now(),
-        description: _descriptionController.text,
         courseLink: _courseLinkController.text,
       );
       setState(() {

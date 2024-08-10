@@ -31,12 +31,7 @@ class _AddTeamPageState extends State<AddTeamPage> {
 
   void _addCategory() {
     if (_formKey.currentState!.validate()) {
-      final newTeam = Team(
-          name1: _name1Controller.text,
-          name2: _name2Controller.text,
-          name3: _name3Controller.text,
-          name4: _name4Controller.text,
-          teamname: _teamController.text);
+      final newTeam = Team(teamname: _teamController.text);
       setState(() {
         Team.teamList.add(newTeam);
       });

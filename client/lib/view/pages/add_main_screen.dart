@@ -12,38 +12,33 @@ class AddMainScreen extends StatefulWidget {
 class _AddMainScreenState extends State<AddMainScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            InkWell(
-              child: Gradient_Button(name: "Admin Control"),
-              onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const AddCategoryPage(),
-                ),
-              ),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        InkWell(
+          child: Gradient_Button(name: "Admin Control"),
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const AddCategoryPage(),
             ),
-            const SizedBox(
-              height: 10,
-            ),
-            InkWell(
-              child: Gradient_Button(
-                name: "Create a Team",
-              ),
-              onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const AddTeamPage(),
-                ),
-              ),
-            ),
-          ],
+          ),
         ),
-      ),
+        const SizedBox(
+          height: 10,
+        ),
+        InkWell(
+          child: Gradient_Button(
+            name: "Create a Team",
+          ),
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const AddTeamPage(),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
