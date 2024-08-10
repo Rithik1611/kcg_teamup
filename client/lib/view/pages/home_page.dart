@@ -1,7 +1,6 @@
-import 'package:flutter/cupertino.dart';
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:kcg_teamup/view/pages/add_main_screen.dart';
-import 'package:kcg_teamup/view/pages/chat_page.dart';
 import 'package:kcg_teamup/view/pages/home.dart';
 import 'package:kcg_teamup/view/pages/profile_page.dart';
 import 'package:kcg_teamup/view/pages/search_page.dart';
@@ -16,123 +15,81 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
 
-  void _onItemTapped(int index) async {
-    if (index == 2) {
-      final result = await Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => AddMainScreen()),
-      );
-      if (result == true) {
-        // Update state to refresh the home page
-        setState(() {
-          _selectedIndex = 0;
-        });
-      }
-    } else {
-      setState(() {
-        _selectedIndex = index;
-      });
-    }
+  final List<Widget> _pages = [
+    HomeScaffold(), // Home page
+    AddMainScreen(), // Add page
+    ProfilePage(), // Profile page
+  ];
+
+  void _onSearchTapped() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => TeamCreationScreen()),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _buildAppBar(),
-      body: _buildBody(),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.black,
-        unselectedItemColor: Colors.grey,
-        onTap: _onItemTapped,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.home),
-            label: 'Home',
+      appBar: AppBar(
+        title: Text(_selectedIndex == 0
+            ? 'Home Page'
+            : _selectedIndex == 1
+                ? 'Add Page'
+                : 'Profile Page'),
+        backgroundColor: Colors.blue,
+        leading: IconButton(
+          icon: const Icon(Icons.menu),
+          onPressed: () {
+            // Handle menu button press
+          },
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.search),
+            onPressed: _onSearchTapped,
           ),
-          BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.search),
-            label: 'Search',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.add),
-            label: 'Add',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.person),
-            label: 'Profile',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.envelope),
-            label: 'Message',
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: IconButton(
+              icon: const Icon(Icons.notifications_active),
+              onPressed: () {
+                // Handle notifications button press
+              },
+            ),
           ),
         ],
       ),
-    );
-  }
-
-  PreferredSizeWidget _buildAppBar() {
-    String title = '';
-    switch (_selectedIndex) {
-      case 0:
-        title = 'Home Page';
-        break;
-      case 1:
-        title = 'Search Page';
-        break;
-      case 2:
-        title = 'Add Page';
-        break;
-      case 3:
-        title = 'Profile Page';
-        break;
-      case 4:
-        title = 'Message Page';
-        break;
-    }
-
-    return AppBar(
-      title: Text(title),
-      backgroundColor: Colors.blue,
-      leading: IconButton(
-        icon: const Icon(Icons.menu),
-        onPressed: () {
-          // Handle menu button press
+      body: _pages[_selectedIndex],
+      bottomNavigationBar: CurvedNavigationBar(
+        backgroundColor: Colors.white,
+        color: Colors.blue,
+        buttonBackgroundColor: Colors.white,
+        animationDuration: Duration(milliseconds: 300),
+        height: 60,
+        items: <Widget>[
+          Icon(
+            Icons.home,
+            size: 30,
+            color: _selectedIndex == 0 ? Colors.black : Colors.white,
+          ),
+          Icon(
+            Icons.add,
+            size: 30,
+            color: _selectedIndex == 1 ? Colors.black : Colors.white,
+          ),
+          Icon(
+            Icons.person,
+            size: 30,
+            color: _selectedIndex == 2 ? Colors.black : Colors.white,
+          ),
+        ],
+        onTap: (index) {
+          setState(() {
+            _selectedIndex = index;
+          });
         },
       ),
-      //bell icon
-      actions: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: IconButton(
-            icon: const Icon(Icons.notifications_active),
-            onPressed: (){},
-          ),
-        )
-      ]
     );
-  }
-
-  Widget _buildBody() {
-    switch (_selectedIndex) {
-      case 0:
-        return Manage();
-      case 1:
-        return TeamApp();
-      case 2:
-        return AddMainScreen();
-      case 3:
-        return ProfilePage();
-      case 4:
-        return ChatPage();
-      default:
-        return Center(
-          child: Text(
-            'Selected Index: $_selectedIndex',
-            style: TextStyle(fontSize: 24),
-          ),
-        );
-    }
   }
 }
