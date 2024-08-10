@@ -1,7 +1,8 @@
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
-
+ 
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -170,27 +171,6 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
-  void _createTeam() {
-    // Logic to create a team
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text('Create Team'),
-          content: Text('This is where you would create your team.'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('Close'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   void _navigateToLeaderboard() {
     Navigator.push(
       context,
@@ -235,7 +215,8 @@ class _ProfilePageState extends State<ProfilePage> {
                       radius: 40,
                       backgroundImage: _image != null
                           ? FileImage(_image!)
-                          : AssetImage('assets/profile_image.png') as ImageProvider,
+                          : AssetImage('assets/profile_image.png')
+                              as ImageProvider,
                       backgroundColor: Colors.blue,
                       child: _image == null
                           ? Text(
@@ -253,7 +234,10 @@ class _ProfilePageState extends State<ProfilePage> {
                         onTap: _editName,
                         child: Text(
                           name,
-                          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black),
+                          style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black),
                         ),
                       ),
                       GestureDetector(
@@ -261,13 +245,6 @@ class _ProfilePageState extends State<ProfilePage> {
                         child: Text(
                           year,
                           style: TextStyle(fontSize: 18, color: Colors.grey),
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: _createTeam,
-                        child: Text(
-                          'Create your team',
-                          style: TextStyle(fontSize: 16, color: Colors.blue),
                         ),
                       ),
                     ],
@@ -279,19 +256,27 @@ class _ProfilePageState extends State<ProfilePage> {
                 alignment: Alignment.centerLeft,
                 child: Text(
                   'Skill set:',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
+                  style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black),
                 ),
               ),
               SizedBox(height: 10),
               Wrap(
                 spacing: 8.0,
-                children: skills.map((skill) => Chip(label: Text(skill, style: TextStyle(color: Colors.white)), backgroundColor: Colors.blue)).toList(),
+                children: skills
+                    .map((skill) => Chip(
+                        label: Text(skill, style: TextStyle(color: Colors.white)),
+                        backgroundColor: Colors.blue))
+                    .toList(),
               ),
               SizedBox(height: 10),
               ElevatedButton.icon(
                 onPressed: _showAddSkillDialog,
                 icon: Icon(Icons.add, color: Colors.white),
-                label: Text('Add Skill', style: TextStyle(color: Colors.white)),
+                label:
+                    Text('Add Skill', style: TextStyle(color: Colors.white)),
                 style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
               ),
               SizedBox(height: 20),
@@ -299,19 +284,28 @@ class _ProfilePageState extends State<ProfilePage> {
                 alignment: Alignment.centerLeft,
                 child: Text(
                   'Interested:',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
+                  style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black),
                 ),
               ),
               SizedBox(height: 10),
               Wrap(
                 spacing: 8.0,
-                children: interests.map((interest) => Chip(label: Text(interest, style: TextStyle(color: Colors.white)), backgroundColor: Colors.blue)).toList(),
+                children: interests
+                    .map((interest) => Chip(
+                        label: Text(interest,
+                            style: TextStyle(color: Colors.white)),
+                        backgroundColor: Colors.blue))
+                    .toList(),
               ),
               SizedBox(height: 10),
               ElevatedButton.icon(
                 onPressed: _showAddInterestDialog,
                 icon: Icon(Icons.add, color: Colors.white),
-                label: Text('Add Interest', style: TextStyle(color: Colors.white)),
+                label: Text('Add Interest',
+                    style: TextStyle(color: Colors.white)),
                 style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
               ),
               SizedBox(height: 20),
@@ -319,7 +313,10 @@ class _ProfilePageState extends State<ProfilePage> {
                 alignment: Alignment.centerLeft,
                 child: Text(
                   'My Reports:',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
+                  style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black),
                 ),
               ),
               SizedBox(height: 10),
@@ -350,15 +347,17 @@ class _ProfilePageState extends State<ProfilePage> {
                 child: ListTile(
                   leading: Icon(Icons.leaderboard, color: Colors.blue),
                   title: Text('Leader-Board Rank'),
-                  subtitle: Text('Rank this month: #7\nRank last month: #5\nPersonal Best: #2'),
+                  subtitle: Text(
+                      'Rank this month: #7\nRank last month: #5\nPersonal Best: #2'),
                   onTap: _navigateToLeaderboard,
                 ),
               ),
               Card(
                 child: ListTile(
-                  leading: Icon(Icons.star, color: Colors.blue),
-                  title: Text('Honour Score'),
-                  subtitle: Text('This Score allows people to rate you for teamwork and ethics.'),
+                  leading: Icon(Icons.bar_chart, color: Colors.blue),
+                  title: Text('Honour-Board Score'),
+                  subtitle: Text(
+                      'Current Score: 106\nLast Score: 98\nPersonal Best: 113'),
                   onTap: _navigateToHonourScore,
                 ),
               ),
@@ -370,62 +369,269 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 }
 
-// Separate pages for different reports
+// Leaderboard Model
+
 
 class LeaderboardPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    List<Student> sortedStudents = getSortedLeaderboard();
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Leader-Board Rank'),
         backgroundColor: Colors.blue,
       ),
-      body: Center(
-        child: Text(
-          'Leader-Board Rank Details Here',
-          style: TextStyle(fontSize: 18, color: Colors.black),
+      body: Column(
+        children: [
+          GestureDetector(
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => FullScreenChart(
+                    sortedStudents: sortedStudents,
+                  ),
+                ),
+              );
+            },
+            child: SizedBox(
+              height: 300,
+              child: BarChart(
+                BarChartData(
+                  alignment: BarChartAlignment.spaceAround,
+                  maxY: sortedStudents[0].projectsWon.toDouble() + 2,
+                  barTouchData: BarTouchData(
+                    touchTooltipData: BarTouchTooltipData(
+                      getTooltipColor: Colors.blueAccent,
+                      getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                        String studentName =
+                            sortedStudents[group.x.toInt()].name;
+                        return BarTooltipItem(
+                          '$studentName\n',
+                          TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold),
+                          children: <TextSpan>[
+                            TextSpan(
+                              text: '${rod.toY} Projects Won',
+                              style: TextStyle(color: Colors.yellow),
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                  ),
+                  titlesData: FlTitlesData(
+                    show: true,
+                    bottomTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                        showTitles: true,
+                        getTitlesWidget: (value, meta) {
+                          return Text(
+                            sortedStudents[value.toInt()]
+                                .name
+                                .split(' ')[0],
+                            style: TextStyle(
+                                color: Colors.blue,
+                                fontWeight: FontWeight.bold),
+                          );
+                        },
+                      ),
+                    ),
+                    leftTitles: AxisTitles(
+                      sideTitles: SideTitles(showTitles: true),
+                    ),
+                  ),
+                  borderData: FlBorderData(show: false),
+                  barGroups: List.generate(sortedStudents.length, (index) {
+                    return BarChartGroupData(
+                      x: index,
+                      barRods: [
+                        BarChartRodData(
+                          toY: sortedStudents[index]
+                              .projectsWon
+                              .toDouble(),
+                          color: Colors.blue,
+                          width: 20,
+                        ),
+                      ],
+                      showingTooltipIndicators: [0],
+                    );
+                  }),
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: sortedStudents.length,
+              itemBuilder: (context, index) {
+                Student student = sortedStudents[index];
+                return ListTile(
+                  leading: CircleAvatar(
+                    child: Text('${index + 1}'), // Display rank
+                    backgroundColor: Colors.blue,
+                    foregroundColor: Colors.white,
+                  ),
+                  title: Text(student.name,
+                      style: TextStyle(fontWeight: FontWeight.bold)),
+                  subtitle: Text(
+                      'Projects Won: ${student.projectsWon}, Projects Joined: ${student.projectsJoined}'),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// FullScreenChart Widget
+class FullScreenChart extends StatelessWidget {
+  final List<Student> sortedStudents;
+
+  FullScreenChart({required this.sortedStudents});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Projects Won Chart'),
+        backgroundColor: Colors.blue,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: BarChart(
+          BarChartData(
+            alignment: BarChartAlignment.spaceAround,
+            maxY: sortedStudents[0].projectsWon.toDouble() + 2,
+            barTouchData: BarTouchData(
+              touchTooltipData: BarTouchTooltipData(
+               getTooltipColor:(BarChartGroupData group, int groupIndex, BarChartRodData rod, int rodIndex) => Colors.blueAccent, 
+                getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                  String studentName = sortedStudents[group.x.toInt()].name;
+                  return BarTooltipItem(
+                    '$studentName\n',
+                    TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.bold),
+                    children: <TextSpan>[
+                      TextSpan(
+                        text: '${rod.toY} Projects Won',
+                        style: TextStyle(color: Colors.yellow),
+                      ),
+                    ],
+                  );
+                },
+              ),
+            ),
+            titlesData: FlTitlesData(
+              show: true,
+              bottomTitles: AxisTitles(
+                sideTitles: SideTitles(
+                  showTitles: true,
+                  getTitlesWidget: (value, meta) {
+                    return Text(
+                      sortedStudents[value.toInt()].name.split(' ')[0],
+                      style: TextStyle(
+                          color: Colors.blue, fontWeight: FontWeight.bold),
+                    );
+                  },
+                ),
+              ),
+              leftTitles: AxisTitles(
+                sideTitles: SideTitles(showTitles: true),
+              ),
+            ),
+            borderData: FlBorderData(show: false),
+            barGroups: List.generate(sortedStudents.length, (index) {
+              return BarChartGroupData(
+                x: index,
+                barRods: [
+                  BarChartRodData(
+                    toY: sortedStudents[index].projectsWon.toDouble(),
+                    color: Colors.blue,
+                    width: 20,
+                  ),
+                ],
+                showingTooltipIndicators: [0],
+              );
+            }),
+          ),
         ),
       ),
     );
   }
 }
 
+// Leaderboard Model
+class Student {
+  final String name;
+  final int projectsWon;
+  final int projectsJoined;
+
+  Student({
+    required this.name,
+    required this.projectsWon,
+    required this.projectsJoined,
+  });
+}
+
+// Leaderboard Sorting Logic
+List<Student> students = [
+  Student(name: 'John Doe', projectsWon: 5, projectsJoined: 10),
+  Student(name: 'Jane Smith', projectsWon: 7, projectsJoined: 12),
+  Student(name: 'Alice Johnson', projectsWon: 5, projectsJoined: 8),
+  Student(name: 'Bob Brown', projectsWon: 6, projectsJoined: 15),
+];
+
+List<Student> getSortedLeaderboard() {
+  students.sort((a, b) {
+    if (b.projectsWon != a.projectsWon) {
+      return b.projectsWon.compareTo(a.projectsWon);
+    } else {
+      return b.projectsJoined.compareTo(a.projectsJoined);
+    }
+  });
+  return students;
+}
+// Leaderboard Sorting Logic
+
+
+
+// Honour-Board Score Page (Placeholder)
 class HonourScorePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Honour Score'),
+        title: Text('Honour-Board Score'),
         backgroundColor: Colors.blue,
       ),
       body: Center(
-        child: Text(
-          'Honour Score Details Here',
-          style: TextStyle(fontSize: 18, color: Colors.black),
-        ),
+        child: Text('Honour-Board Score Details'),
       ),
     );
   }
 }
 
+// Social-Media Handles Page (Placeholder)
 class SocialMediaHandlesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Social Media Handles'),
+        title: Text('Social-Media Handles'),
         backgroundColor: Colors.blue,
       ),
       body: Center(
-        child: Text(
-          'Social Media Handles Details Here',
-          style: TextStyle(fontSize: 18, color: Colors.black),
-        ),
+        child: Text('Social-Media Handles Details'),
       ),
     );
   }
 }
 
+// Projects Joined Page (Placeholder)
 class ProjectsJoinedPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -435,10 +641,7 @@ class ProjectsJoinedPage extends StatelessWidget {
         backgroundColor: Colors.blue,
       ),
       body: Center(
-        child: Text(
-          'Projects Joined Details Here',
-          style: TextStyle(fontSize: 18, color: Colors.black),
-        ),
+        child: Text('Details of Projects Joined'),
       ),
     );
   }
