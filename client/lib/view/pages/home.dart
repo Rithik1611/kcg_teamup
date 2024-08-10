@@ -372,15 +372,18 @@ class Event {
 
 class Category {
   final String title;
+  final String eventType;
   final String courseLink;
-  final DateTime? date;
-  final String? about; // Optional 'about' field
+  final String about;
+  final DateTime? date; // Optional 'about' field
+  // Add this if you need a specific field for event type
 
   Category({
     required this.title,
     required this.courseLink,
     this.date,
-    this.about,
+    required this.about,
+    required this.eventType, // Include this in the constructor
   });
 
   static List<Category> popularCourseList = [];
@@ -415,33 +418,42 @@ class Home extends StatelessWidget {
             return const Center(child: CircularProgressIndicator());
           } else {
             final filteredCategories = getFilteredCategories();
-            return GridView.builder(
-              padding: const EdgeInsets.all(8),
-              physics:
-                  const NeverScrollableScrollPhysics(), // Prevents GridView from scrolling
-              shrinkWrap:
-                  true, // Allows GridView to size itself based on content
-              itemCount: filteredCategories.length,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                mainAxisSpacing: 16.0,
-                crossAxisSpacing: 12.0,
-                childAspectRatio: 0.8,
-              ),
-              itemBuilder: (context, index) {
-                final category = filteredCategories[index];
-                return CategoryView(
-                  callback: callBack,
-                  category: category,
-                );
-              },
-            );
+            if (filteredCategories.isEmpty) {
+              // Show message if no events are available
+              return const Center(
+                child: Text(
+                  'No upcoming events displayed',
+                  style: TextStyle(fontSize: 18, color: Colors.black54),
+                ),
+              );
+            } else {
+              // Show GridView if there are events
+              return GridView.builder(
+                padding: const EdgeInsets.all(8),
+                physics: const NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: filteredCategories.length,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 3,
+                  mainAxisSpacing: 16.0,
+                  crossAxisSpacing: 12.0,
+                  childAspectRatio: 0.8,
+                ),
+                itemBuilder: (context, index) {
+                  final category = filteredCategories[index];
+                  return CategoryView(
+                    callback: callBack,
+                    category: category,
+                  );
+                },
+              );
+            }
           }
         },
       ),
     );
   }
-}
+} // Import the new page
 
 class CategoryView extends StatelessWidget {
   const CategoryView({
@@ -457,7 +469,14 @@ class CategoryView extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       splashColor: Colors.transparent,
-      onTap: callback,
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => EventDetailsPage(category: category),
+          ),
+        );
+      },
       child: SizedBox(
         height: 20,
         child: Column(
@@ -511,6 +530,56 @@ class CategoryView extends StatelessWidget {
                 ),
               ),
             ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class EventDetailsPage extends StatelessWidget {
+  final Category category;
+
+  const EventDetailsPage({Key? key, required this.category}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(category.title),
+        backgroundColor: Colors.blue,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Title: ${category.title}',
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              'Course Link: ${category.courseLink}',
+              style: const TextStyle(fontSize: 16),
+            ),
+            const SizedBox(height: 10),
+            if (category.date != null)
+              Text(
+                'Date: ${category.date!.toLocal()}',
+                style: const TextStyle(fontSize: 16),
+              ),
+            const SizedBox(height: 10),
+            Text(
+              'Description: ${category.about}',
+              style: const TextStyle(fontSize: 16),
+            ),
+            const SizedBox(height: 10),
+            if (category.title.isNotEmpty)
+              Text(
+                'Event Type: ${category.eventType}', // Assuming the 'title' field is being used for 'Event Type'
+                style: const TextStyle(fontSize: 16),
+              ),
           ],
         ),
       ),

@@ -1,3 +1,4 @@
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart'; // Import the package
 import 'package:flutter/material.dart';
 import 'package:kcg_teamup/view/pages/home.dart';
 
@@ -60,14 +61,31 @@ class _AddCategoryPageState extends State<AddCategoryPage> {
               onPressed: () {
                 if (_formKey.currentState!.validate()) {
                   final newCategory = Category(
-                    title: _titleController.text,
-                    courseLink: _courseLinkController.text,
-                    date: _selectedDate,
-                    // Optionally use 'about' field if needed
-                  );
+                      title: _titleController.text,
+                      courseLink: _courseLinkController.text,
+                      date: _selectedDate,
+                      eventType: _descriptionController.text,
+                      about: _aboutController.text
+                      // Optionally use 'about' field if needed
+                      );
                   setState(() {
                     Category.popularCourseList.add(newCategory);
                   });
+
+                  // Show Awesome Snackbar
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      elevation: 0,
+                      backgroundColor: Colors.white,
+                      content: AwesomeSnackbarContent(
+                        title: 'Posted!',
+                        message: 'New event has been added to the students.',
+                        contentType: ContentType.success,
+                      ),
+                      behavior: SnackBarBehavior.floating,
+                    ),
+                  );
+
                   Navigator.of(context).pop(); // Close the dialog
                   Navigator.of(context).pop(true); // Return to previous screen
                 }
@@ -85,7 +103,7 @@ class _AddCategoryPageState extends State<AddCategoryPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Add New Event'),
-        backgroundColor: const Color.fromARGB(255, 93, 93, 93),
+        backgroundColor: Colors.blue,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
