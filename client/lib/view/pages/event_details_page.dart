@@ -33,23 +33,7 @@ class EventDetailsPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 10),
                   Row(
-                    children: [
-                      Spacer(),
-                      if (category.date != null)
-                        Text(
-                          'Date: ${formatDateWithoutTrailingZeros(category.date!)}',
-                          style: GoogleFonts.poppins(
-                            textStyle: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ),
-                      const SizedBox(height: 10),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       if (category.title.isNotEmpty)
                         Text(
@@ -63,7 +47,25 @@ class EventDetailsPage extends StatelessWidget {
                         ),
                     ],
                   ),
-                  const SizedBox(height: 18),
+                  SizedBox(
+                    height: 25,
+                  ),
+                  Row(
+                    children: [
+                      Spacer(),
+                      if (category.date != null)
+                        Text(
+                          'Date: ${formatDateWithoutTrailingZeros(category.date!)}',
+                          style: GoogleFonts.poppins(
+                            textStyle: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                  const SizedBox(height: 15),
                   Text(
                     "About:",
                     style: GoogleFonts.poppins(

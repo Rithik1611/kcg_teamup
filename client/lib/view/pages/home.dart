@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:kcg_teamup/view/pages/event_details_page.dart';
-import 'package:kcg_teamup/view/pages/home_page.dart';
-import 'package:table_calendar/table_calendar.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:kcg_teamup/view/widgets/calender.dart';
 
 class HomeScaffold extends StatelessWidget {
   const HomeScaffold({super.key});
@@ -211,180 +209,19 @@ class CalenderTheme extends StatelessWidget {
   }
 }
 
-class CalendarPage extends StatefulWidget {
-  const CalendarPage({super.key});
-
-  @override
-  _CalendarPageState createState() => _CalendarPageState();
-}
-
-class _CalendarPageState extends State<CalendarPage> {
-  CalendarFormat _calendarFormat = CalendarFormat.month;
-  DateTime _focusedDay = DateTime.now();
-  DateTime _selectedDay = DateTime.now();
-  Map<DateTime, List<Event>> _events = {};
-
-  void _addEventDialog(DateTime selectedDay) {
-    final TextEditingController _eventController = TextEditingController();
-
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Add Task'),
-        content: TextField(
-          controller: _eventController,
-          decoration: const InputDecoration(hintText: 'Enter task description'),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () {
-              setState(() {
-                if (_eventController.text.isNotEmpty) {
-                  if (!_events.containsKey(selectedDay)) {
-                    _events[selectedDay] = [];
-                  }
-                  _events[selectedDay]!.add(
-                    Event(
-                      title: 'Task ${_events[selectedDay]!.length + 1}',
-                      description: _eventController.text,
-                    ),
-                  );
-                }
-              });
-              Navigator.of(context).pop();
-            },
-            child: const Text('Add'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Calender"),
-        leading: IconButton(
-            onPressed: () {
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => HomePage()));
-            },
-            icon: Icon(Icons.chevron_left_sharp)),
-      ),
-      body: Column(
-        children: [
-          TableCalendar(
-            firstDay: DateTime(2020),
-            lastDay: DateTime(2050),
-            focusedDay: _focusedDay,
-            calendarFormat: _calendarFormat,
-            selectedDayPredicate: (day) => _selectedDay == day,
-            onDaySelected: (selectedDay, focusedDay) {
-              setState(() {
-                _selectedDay = selectedDay;
-                _focusedDay = focusedDay;
-              });
-            },
-            onPageChanged: (focusedDay) {
-              _focusedDay = focusedDay;
-            },
-            eventLoader: (day) => _events[day] ?? [],
-            calendarStyle: CalendarStyle(
-              selectedDecoration: const BoxDecoration(
-                color: Colors.blue, // Background color for selected date
-                shape: BoxShape.circle,
-              ),
-              todayDecoration: BoxDecoration(
-                color: Colors.blue.withOpacity(
-                    0.3), // Background color for today with opacity
-                shape: BoxShape.circle,
-              ),
-              markerDecoration: const BoxDecoration(
-                color: Color.fromARGB(255, 0, 0, 0), // Marker color in calendar
-                shape: BoxShape.circle,
-              ),
-            ),
-            headerStyle: HeaderStyle(
-              formatButtonVisible: false, // Hides the "2 weeks" button
-              titleTextStyle: TextStyle(
-                fontSize: 20.0,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          const SizedBox(height: 16.0),
-          ElevatedButton(
-            onPressed: () => _addEventDialog(_selectedDay),
-            child: const Text('Add Task'),
-          ),
-          const SizedBox(height: 16.0),
-          Expanded(
-            child:
-                _events[_selectedDay] == null || _events[_selectedDay]!.isEmpty
-                    ? const Center(child: Text('No Tasks for this day.'))
-                    : ListView.builder(
-                        itemCount: _events[_selectedDay]!.length,
-                        itemBuilder: (context, index) {
-                          return ListTile(
-                            title: Text(_events[_selectedDay]![index].title),
-                            subtitle:
-                                Text(_events[_selectedDay]![index].description),
-                            trailing: IconButton(
-                              icon: const Icon(Icons.delete, color: Colors.red),
-                              onPressed: () {
-                                _deleteEvent(_selectedDay, index);
-                              },
-                            ),
-                          );
-                        },
-                      ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _deleteEvent(DateTime selectedDay, int index) {
-    setState(() {
-      _events[selectedDay]!.removeAt(index);
-      if (_events[selectedDay]!.isEmpty) {
-        _events.remove(selectedDay);
-      }
-    });
-  }
-}
-
-class Event {
-  final String title;
-  final String description;
-
-  Event({required this.title, required this.description});
-
-  @override
-  String toString() => '$title: $description';
-}
-
 class Category {
   final String title;
   final String eventType;
   final String courseLink;
   final String about;
   final DateTime? date; // Optional 'about' field
-  // Add this if you need a specific field for event type
 
   Category({
     required this.title,
     required this.courseLink,
     this.date,
     required this.about,
-    required this.eventType, // Include this in the constructor
+    required this.eventType,
   });
 
   static List<Category> popularCourseList = [];
@@ -435,10 +272,11 @@ class Home extends StatelessWidget {
                 shrinkWrap: true,
                 itemCount: filteredCategories.length,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,
+                  crossAxisCount: 2, // Change this to 2 for 2 columns
                   mainAxisSpacing: 16.0,
                   crossAxisSpacing: 12.0,
-                  childAspectRatio: 0.8,
+                  childAspectRatio:
+                      1.0, // Adjust this ratio based on desired item size
                 ),
                 itemBuilder: (context, index) {
                   final category = filteredCategories[index];
@@ -454,7 +292,7 @@ class Home extends StatelessWidget {
       ),
     );
   }
-} // Import the new page
+}
 
 class CategoryView extends StatelessWidget {
   const CategoryView({
@@ -469,69 +307,42 @@ class CategoryView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      splashColor: Colors.transparent,
       onTap: () {
         Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => EventDetailsPage(category: category),
-          ),
-        );
+            context,
+            MaterialPageRoute(
+              builder: (context) => EventDetailsPage(category: category),
+            ));
       },
-      child: SizedBox(
-        height: 20,
-        child: Column(
-          children: [
-            Expanded(
-              child: SafeArea(
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.grey[200],
-                    borderRadius: BorderRadius.circular(16.0),
-                  ),
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: Text(
-                          category.title,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 16,
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                        child: GestureDetector(
-                          onTap: () async {
-                            final Uri url = Uri.parse(category.courseLink);
-                            if (await canLaunchUrl(url)) {
-                              await launchUrl(url);
-                            } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text('Could not launch $url'),
-                                ),
-                              );
-                            }
-                          },
-                          child: const Text(
-                            'Event-Link',
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Color.fromARGB(255, 0, 0, 0),
-                              decoration: TextDecoration.underline,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 8.0),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.blue, Colors.deepPurple, Colors.purple],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(16.0),
+        ),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: SafeArea(
+                  child: Text(
+                    category.title,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 16,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
