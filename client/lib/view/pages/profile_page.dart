@@ -370,211 +370,12 @@ class _ProfilePageState extends State<ProfilePage> {
 }
 
 // Leaderboard Model
-
-
-class LeaderboardPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    List<Student> sortedStudents = getSortedLeaderboard();
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Leader-Board Rank'),
-        backgroundColor: Colors.blue,
-      ),
-      body: Column(
-        children: [
-          GestureDetector(
-            onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => FullScreenChart(
-                    sortedStudents: sortedStudents,
-                  ),
-                ),
-              );
-            },
-            child: SizedBox(
-              height: 300,
-              child: BarChart(
-                BarChartData(
-                  alignment: BarChartAlignment.spaceAround,
-                  maxY: sortedStudents[0].projectsWon.toDouble() + 2,
-                  barTouchData: BarTouchData(
-                    touchTooltipData: BarTouchTooltipData(
-                      getTooltipColor: Colors.blueAccent,
-                      getTooltipItem: (group, groupIndex, rod, rodIndex) {
-                        String studentName =
-                            sortedStudents[group.x.toInt()].name;
-                        return BarTooltipItem(
-                          '$studentName\n',
-                          TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold),
-                          children: <TextSpan>[
-                            TextSpan(
-                              text: '${rod.toY} Projects Won',
-                              style: TextStyle(color: Colors.yellow),
-                            ),
-                          ],
-                        );
-                      },
-                    ),
-                  ),
-                  titlesData: FlTitlesData(
-                    show: true,
-                    bottomTitles: AxisTitles(
-                      sideTitles: SideTitles(
-                        showTitles: true,
-                        getTitlesWidget: (value, meta) {
-                          return Text(
-                            sortedStudents[value.toInt()]
-                                .name
-                                .split(' ')[0],
-                            style: TextStyle(
-                                color: Colors.blue,
-                                fontWeight: FontWeight.bold),
-                          );
-                        },
-                      ),
-                    ),
-                    leftTitles: AxisTitles(
-                      sideTitles: SideTitles(showTitles: true),
-                    ),
-                  ),
-                  borderData: FlBorderData(show: false),
-                  barGroups: List.generate(sortedStudents.length, (index) {
-                    return BarChartGroupData(
-                      x: index,
-                      barRods: [
-                        BarChartRodData(
-                          toY: sortedStudents[index]
-                              .projectsWon
-                              .toDouble(),
-                          color: Colors.blue,
-                          width: 20,
-                        ),
-                      ],
-                      showingTooltipIndicators: [0],
-                    );
-                  }),
-                ),
-              ),
-            ),
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: sortedStudents.length,
-              itemBuilder: (context, index) {
-                Student student = sortedStudents[index];
-                return ListTile(
-                  leading: CircleAvatar(
-                    child: Text('${index + 1}'), // Display rank
-                    backgroundColor: Colors.blue,
-                    foregroundColor: Colors.white,
-                  ),
-                  title: Text(student.name,
-                      style: TextStyle(fontWeight: FontWeight.bold)),
-                  subtitle: Text(
-                      'Projects Won: ${student.projectsWon}, Projects Joined: ${student.projectsJoined}'),
-                );
-              },
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// FullScreenChart Widget
-class FullScreenChart extends StatelessWidget {
-  final List<Student> sortedStudents;
-
-  FullScreenChart({required this.sortedStudents});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Projects Won Chart'),
-        backgroundColor: Colors.blue,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: BarChart(
-          BarChartData(
-            alignment: BarChartAlignment.spaceAround,
-            maxY: sortedStudents[0].projectsWon.toDouble() + 2,
-            barTouchData: BarTouchData(
-              touchTooltipData: BarTouchTooltipData(
-               getTooltipColor:(BarChartGroupData group, int groupIndex, BarChartRodData rod, int rodIndex) => Colors.blueAccent, 
-                getTooltipItem: (group, groupIndex, rod, rodIndex) {
-                  String studentName = sortedStudents[group.x.toInt()].name;
-                  return BarTooltipItem(
-                    '$studentName\n',
-                    TextStyle(
-                        color: Colors.white, fontWeight: FontWeight.bold),
-                    children: <TextSpan>[
-                      TextSpan(
-                        text: '${rod.toY} Projects Won',
-                        style: TextStyle(color: Colors.yellow),
-                      ),
-                    ],
-                  );
-                },
-              ),
-            ),
-            titlesData: FlTitlesData(
-              show: true,
-              bottomTitles: AxisTitles(
-                sideTitles: SideTitles(
-                  showTitles: true,
-                  getTitlesWidget: (value, meta) {
-                    return Text(
-                      sortedStudents[value.toInt()].name.split(' ')[0],
-                      style: TextStyle(
-                          color: Colors.blue, fontWeight: FontWeight.bold),
-                    );
-                  },
-                ),
-              ),
-              leftTitles: AxisTitles(
-                sideTitles: SideTitles(showTitles: true),
-              ),
-            ),
-            borderData: FlBorderData(show: false),
-            barGroups: List.generate(sortedStudents.length, (index) {
-              return BarChartGroupData(
-                x: index,
-                barRods: [
-                  BarChartRodData(
-                    toY: sortedStudents[index].projectsWon.toDouble(),
-                    color: Colors.blue,
-                    width: 20,
-                  ),
-                ],
-                showingTooltipIndicators: [0],
-              );
-            }),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-// Leaderboard Model
 class Student {
   final String name;
   final int projectsWon;
   final int projectsJoined;
 
-  Student({
-    required this.name,
-    required this.projectsWon,
-    required this.projectsJoined,
-  });
+  Student({required this.name, required this.projectsWon, required this.projectsJoined});
 }
 
 // Leaderboard Sorting Logic
@@ -595,9 +396,100 @@ List<Student> getSortedLeaderboard() {
   });
   return students;
 }
-// Leaderboard Sorting Logic
 
+// Leaderboard Page UI
+class LeaderboardPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    List<Student> sortedStudents = getSortedLeaderboard();
 
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Leader-Board Rank'),
+        backgroundColor: Colors.blue,
+      ),
+      body: Column(
+        children: [
+          SizedBox(
+            height: 300,
+            child: BarChart(
+              BarChartData(
+                alignment: BarChartAlignment.spaceAround,
+                maxY: sortedStudents[0].projectsWon.toDouble() + 2,
+                barTouchData: BarTouchData(
+                  touchTooltipData: BarTouchTooltipData(
+                    getTooltipColor: (_) => Colors.blueAccent,
+                    getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                      String studentName = sortedStudents[group.x.toInt()].name;
+                      return BarTooltipItem(
+                        '$studentName\n',
+                        TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                        children: <TextSpan>[
+                          TextSpan(
+                            text: '${rod.toY} Projects Won',
+                            style: TextStyle(color: Colors.yellow),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                ),
+                titlesData: FlTitlesData(
+                  show: true,
+                  bottomTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      getTitlesWidget: (value, meta) {
+                        return Text(
+                          sortedStudents[value.toInt()].name.split(' ')[0],
+                          style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
+                        );
+                      },
+                    ),
+                  ),
+                  leftTitles: AxisTitles(
+                    sideTitles: SideTitles(showTitles: true),
+                  ),
+                ),
+                borderData: FlBorderData(show: false),
+                barGroups: List.generate(sortedStudents.length, (index) {
+                  return BarChartGroupData(
+                    x: index,
+                    barRods: [
+                      BarChartRodData(
+                        toY: sortedStudents[index].projectsWon.toDouble(),
+                        color: Colors.blue,
+                        width: 20,
+                      ),
+                    ],
+                    showingTooltipIndicators: [0],
+                  );
+                }),
+              ),
+            ),
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: sortedStudents.length,
+              itemBuilder: (context, index) {
+                Student student = sortedStudents[index];
+                return ListTile(
+                  leading: CircleAvatar(
+                    child: Text('${index + 1}'), // Display rank
+                    backgroundColor: Colors.blue,
+                    foregroundColor: Colors.white,
+                  ),
+                  title: Text(student.name, style: TextStyle(fontWeight: FontWeight.bold)),
+                  subtitle: Text('Projects Won: ${student.projectsWon}, Projects Joined: ${student.projectsJoined}'),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
 
 // Honour-Board Score Page (Placeholder)
 class HonourScorePage extends StatelessWidget {
