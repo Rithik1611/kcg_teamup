@@ -3,7 +3,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:kcg_teamup/view/pages/event_details_page.dart';
 import 'package:kcg_teamup/view/pages/home_page.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class HomeScaffold extends StatelessWidget {
   const HomeScaffold({super.key});
@@ -377,14 +376,13 @@ class Category {
   final String courseLink;
   final String about;
   final DateTime? date; // Optional 'about' field
-  // Add this if you need a specific field for event type
 
   Category({
     required this.title,
     required this.courseLink,
     this.date,
     required this.about,
-    required this.eventType, // Include this in the constructor
+    required this.eventType,
   });
 
   static List<Category> popularCourseList = [];
@@ -435,10 +433,11 @@ class Home extends StatelessWidget {
                 shrinkWrap: true,
                 itemCount: filteredCategories.length,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,
+                  crossAxisCount: 2, // Change this to 2 for 2 columns
                   mainAxisSpacing: 16.0,
                   crossAxisSpacing: 12.0,
-                  childAspectRatio: 0.8,
+                  childAspectRatio:
+                      1.0, // Adjust this ratio based on desired item size
                 ),
                 itemBuilder: (context, index) {
                   final category = filteredCategories[index];
@@ -454,7 +453,7 @@ class Home extends StatelessWidget {
       ),
     );
   }
-} // Import the new page
+}
 
 class CategoryView extends StatelessWidget {
   const CategoryView({
@@ -469,69 +468,42 @@ class CategoryView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      splashColor: Colors.transparent,
       onTap: () {
         Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => EventDetailsPage(category: category),
-          ),
-        );
+            context,
+            MaterialPageRoute(
+              builder: (context) => EventDetailsPage(category: category),
+            ));
       },
-      child: SizedBox(
-        height: 20,
-        child: Column(
-          children: [
-            Expanded(
-              child: SafeArea(
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.grey[200],
-                    borderRadius: BorderRadius.circular(16.0),
-                  ),
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: Text(
-                          category.title,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 16,
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                        child: GestureDetector(
-                          onTap: () async {
-                            final Uri url = Uri.parse(category.courseLink);
-                            if (await canLaunchUrl(url)) {
-                              await launchUrl(url);
-                            } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text('Could not launch $url'),
-                                ),
-                              );
-                            }
-                          },
-                          child: const Text(
-                            'Event-Link',
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Color.fromARGB(255, 0, 0, 0),
-                              decoration: TextDecoration.underline,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 8.0),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.blue, Colors.deepPurple, Colors.purple],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(16.0),
+        ),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: SafeArea(
+                  child: Text(
+                    category.title,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 16,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
