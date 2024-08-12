@@ -62,9 +62,9 @@ class _HomePageState extends State<HomePage> {
       ),
       body: _pages[_selectedIndex],
       bottomNavigationBar: CurvedNavigationBar(
-        backgroundColor: Colors.white,
-        color: Colors.blue,
-        buttonBackgroundColor: Colors.white,
+        backgroundColor: Colors.transparent,
+        color: const Color.fromARGB(115, 158, 158, 158),
+        buttonBackgroundColor: Color.fromARGB(51, 0, 0, 0),
         animationDuration: Duration(milliseconds: 300),
         height: 60,
         items: <Widget>[
